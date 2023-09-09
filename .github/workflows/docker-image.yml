@@ -13,4 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: make docker_build
+      run: docker build . -t file-server
+           docker login -u felixhau -p ${{ secrets.DOCKER_HUB_TOKEN }}
+           docker push file-server:latest
+
