@@ -11,32 +11,31 @@ env:
 
 jobs:
   
-  # build:
-  #   needs: overwrite-release-version
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       go-version: [ '1.19', '1.20', '1.21.x' ]
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.19', '1.20', '1.21.x' ]
     
-  #   steps:
-  #     - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Setup Go ${{ matrix.go-version }}
-  #       uses: actions/setup-go@v4
-  #       with:
-  #         go-version: ${{ matrix.go-version }}
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
 
-  #     - name: Go init
-  #       run: go mod init file-server
+      - name: Go init
+        run: go mod init file-server
 
-  #     - name: Build
-  #       run: go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-  #     - name: Test
-  #       run: go test -v ./...
+      - name: Test
+        run: go test -v ./...
 
   docker:
-      # needs: build
+      needs: build
       runs-on: ubuntu-latest
       
       steps:
