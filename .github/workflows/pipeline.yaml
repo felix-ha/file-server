@@ -25,6 +25,7 @@ jobs:
           echo "DOCKER_IMAGE_TAG=$VERSION" >> $GITHUB_ENV
 
   build:
+    needs: overwrite-release-version
     runs-on: ubuntu-latest
     strategy:
       matrix:
