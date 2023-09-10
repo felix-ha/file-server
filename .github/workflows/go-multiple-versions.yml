@@ -36,7 +36,7 @@ jobs:
 #         run: go test -v ./...
 
   test:
-    # needs: build
+    needs: set-env-var
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
