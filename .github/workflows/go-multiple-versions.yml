@@ -1,17 +1,15 @@
 name: Go-Matrix
 
-on: [push]
+on:
+    push:
+      branches:
+        - main
+        - develop
 
 env:
-    GIT_BRANCH: $$(echo "${GITHUB_REF}" | sed 's/^refs\/heads\///')
+    DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || 'develop' }}
 
 jobs:
-
-  set-env-var:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set branch name
-        run: echo "::set-env name=BRANCH_NAME::$(echo $GITHUB_REF_NAME)"
 
 #   build:
 #     runs-on: ubuntu-latest
@@ -36,10 +34,10 @@ jobs:
 #         run: go test -v ./...
 
   test:
-    needs: set-env-var
+    # needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Print branch name
-        run: echo $BRANCH_NAME
+      - name: Print Docker tag
+        run: echo $DOCKER_IMAGE_TAG
 
