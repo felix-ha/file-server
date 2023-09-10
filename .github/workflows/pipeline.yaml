@@ -62,3 +62,12 @@ jobs:
           
         - name: Push to Docker registry
           run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
+
+  release:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start release
+        run: echo Starting release steps
