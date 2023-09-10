@@ -63,4 +63,4 @@ jobs:
           echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
           echo "Tag name from github.ref_name: ${{  github.ref_name }}"
           echo "Remove trailing d"
-          cut -c 1- -d "d" ${{  github.ref_name }}
+          cut -c 1- -d "d" "${{  github.ref_name }}"
