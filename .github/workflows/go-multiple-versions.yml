@@ -2,6 +2,9 @@ name: Go-Matrix
 
 on: [push]
 
+env:
+    GIT_BRANCH: echo "${GITHUB_REF}" | sed 's/^refs\/heads\///'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,5 +34,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Print branch name
-        run: echo "${GITHUB_REF}" | sed 's/^refs\/heads\///'
+        run: echo $GIT_BRANCH
 
