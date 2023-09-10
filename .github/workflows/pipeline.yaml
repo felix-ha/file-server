@@ -9,7 +9,7 @@ on:
           - 'v*'
 
 env:
-    DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || 'develop' }}
+    DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref == 'refs/heads/develop' && 'develop' ||  'release' }}
 
 jobs:
 
