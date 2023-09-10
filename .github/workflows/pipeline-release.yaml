@@ -38,20 +38,14 @@ jobs:
       steps:
         - uses: actions/checkout@v3
 
-        - name: Overwrite Docker image tag
-          run: |
-            echo $GITHUB_REF_NAME
-            export DOCKER_IMAGE_TAG=${GITHUB_REF_NAME#v}
-            echo $DOCKER_IMAGE_TAG
-
         - name: Build the Docker image
-          run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
+          run: docker build . -t felixhau/file-server:${GITHUB_REF_NAME#v}
 
         - name: Login to Docker registry
           run: docker login -u felixhau -p ${{ secrets.DOCKER_HUB_TOKEN }}
           
         - name: Push to Docker registry
-          run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
+          run: docker push felixhau/file-server:${GITHUB_REF_NAME#v}
 
   release:
     if: startsWith(github.event.ref, 'refs/tags/v')
