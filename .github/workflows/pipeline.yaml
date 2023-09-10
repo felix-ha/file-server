@@ -13,16 +13,6 @@ env:
 
 jobs:
   
-  overwrite-release-version:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Write release version
-        run: |
-          echo $GITHUB_REF_NAME
-          export DOCKER_IMAGE_TAG=${GITHUB_REF_NAME#v}
-          echo $DOCKER_IMAGE_TAG
-
   # build:
   #   needs: overwrite-release-version
   #   runs-on: ubuntu-latest
@@ -48,11 +38,17 @@ jobs:
   #       run: go test -v ./...
 
   docker:
-      needs: overwrite-release-version
+      # needs: overwrite-release-version
       runs-on: ubuntu-latest
       
       steps:
         - uses: actions/checkout@v3
+
+        - name: Overwrite Docker image tag
+          run: |
+            echo $GITHUB_REF_NAME
+            export DOCKER_IMAGE_TAG=${GITHUB_REF_NAME#v}
+            echo $DOCKER_IMAGE_TAG
 
         - name: Build the Docker image
           run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
