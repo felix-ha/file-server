@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         go-version: [ '1.19', '1.20', '1.21.x' ]
+    
     steps:
       - uses: actions/checkout@v3
 
@@ -36,20 +37,15 @@ jobs:
   docker:
       needs: build
       runs-on: ubuntu-latest
+      
       steps:
         - uses: actions/checkout@v3
+
         - name: Build the Docker image
           run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
+
         - name: Login to Docker registry
           run: docker login -u felixhau -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          
         - name: Push to Docker registry
           run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
-
-#   test:
-
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Print Docker tag
-#         run: echo $DOCKER_IMAGE_TAG
-
