@@ -13,66 +13,52 @@ env:
 
 jobs:
 
-  # build:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       go-version: [ '1.19', '1.20', '1.21.x' ]
-    
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     - name: Setup Go ${{ matrix.go-version }}
-  #       uses: actions/setup-go@v4
-  #       with:
-  #         go-version: ${{ matrix.go-version }}
-
-  #     - name: Go init
-  #       run: go mod init file-server
-
-  #     - name: Build
-  #       run: go build -v ./...
-
-  #     - name: Test
-  #       run: go test -v ./...
-
-  # docker:
-  #     needs: build
-  #     runs-on: ubuntu-latest
-      
-  #     steps:
-  #       - uses: actions/checkout@v3
-
-  #       - name: Build the Docker image
-  #         run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
-
-  #       - name: Login to Docker registry
-  #         run: docker login -u felixhau -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          
-  #       - name: Push to Docker registry
-  #         run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
-
-  release:
-    # if: startsWith(github.event.ref, 'refs/tags/v')
-    # needs: docker
+  overwrite-release-version:
+    if: startsWith(github.event.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
 
     steps:
-      # - name: Get tag name
-      #   run: |
-      #     echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-      #     echo "Tag name from github.ref_name: ${{  github.ref_name }}"
-      #     echo "Remove trailing d"
-      #     cut -c 1- -d "d" "${{  github.ref_name }}"
-
-          # Store the version, stripping any v-prefix
       - name: Write release version
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           echo Version: $VERSION
           echo "DOCKER_IMAGE_TAG=$VERSION" >> $GITHUB_ENV
 
-          # Use version in other step
-      - name: Read tag
-        run: echo ${DOCKER_IMAGE_TAG}
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.19', '1.20', '1.21.x' ]
+    
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Go init
+        run: go mod init file-server
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
+
+  docker:
+      needs: build
+      runs-on: ubuntu-latest
+      
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Build the Docker image
+          run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
+
+        - name: Login to Docker registry
+          run: docker login -u felixhau -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          
+        - name: Push to Docker registry
+          run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
