@@ -58,9 +58,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get tag name
+      # - name: Get tag name
+      #   run: |
+      #     echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+      #     echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+      #     echo "Remove trailing d"
+      #     cut -c 1- -d "d" "${{  github.ref_name }}"
+
+          # Store the version, stripping any v-prefix
+      - name: Write release version
         run: |
-          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
-          echo "Remove trailing d"
-          cut -c 1- -d "d" "${{  github.ref_name }}"
+          VERSION=${GITHUB_REF_NAME#v}
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+          # Use version in other step
+      - name: Read version
+        run: echo ${VERSION}
+
