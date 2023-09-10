@@ -3,7 +3,7 @@ name: Go-Matrix
 on: [push]
 
 env:
-    GIT_BRANCH: $(echo "${GITHUB_REF}" | sed 's/^refs\/heads\///')
+    GIT_BRANCH: $$(echo "${GITHUB_REF}" | sed 's/^refs\/heads\///')
 
 jobs:
 #   build:
