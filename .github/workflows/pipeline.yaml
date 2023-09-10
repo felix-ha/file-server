@@ -49,3 +49,13 @@ jobs:
           
         - name: Push to Docker registry
           run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tag name
+        run: |
+          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
