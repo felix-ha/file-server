@@ -70,9 +70,9 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           echo Version: $VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_TAG=$VERSION" >> $GITHUB_ENV
 
           # Use version in other step
-      - name: Read version
-        run: echo ${VERSION}
+      - name: Read tag
+        run: echo ${DOCKER_IMAGE_TAG}
 
