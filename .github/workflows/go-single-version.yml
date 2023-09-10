@@ -22,7 +22,7 @@ jobs:
         go-version: '1.21.x'
 
     - name: Go init
-      run: go mod init
+      run: go mod init file-server
 
     - name: Build
       run: go build -v ./...
