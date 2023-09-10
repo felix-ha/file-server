@@ -1,13 +1,9 @@
-name: CI-CD-Pipeline
+name: Release
 
 on:
     push:
-      branches:
-        - main
-        - develop
-        
-env:
-    DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref == 'refs/heads/develop' && 'unstable'}}
+      tags:
+          - 'v*'
 
 jobs:
   
@@ -36,11 +32,17 @@ jobs:
   #       run: go test -v ./...
 
   docker:
-      # needs: build
+      # needs: overwrite-release-version
       runs-on: ubuntu-latest
       
       steps:
         - uses: actions/checkout@v3
+
+        - name: Overwrite Docker image tag
+          run: |
+            echo $GITHUB_REF_NAME
+            export DOCKER_IMAGE_TAG=${GITHUB_REF_NAME#v}
+            echo $DOCKER_IMAGE_TAG
 
         - name: Build the Docker image
           run: docker build . -t felixhau/file-server:$DOCKER_IMAGE_TAG
@@ -50,3 +52,12 @@ jobs:
           
         - name: Push to Docker registry
           run: docker push felixhau/file-server:$DOCKER_IMAGE_TAG
+
+  release:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start release
+        run: echo Starting release steps
