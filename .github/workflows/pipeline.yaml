@@ -5,6 +5,8 @@ on:
       branches:
         - main
         - develop
+      tags:
+          - 'v*'
 
 env:
     DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || 'develop' }}
